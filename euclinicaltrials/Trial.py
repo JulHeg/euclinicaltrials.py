@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, List
+from typing import List
 import requests
 from bs4 import BeautifulSoup
 from . import CTIS, Document
@@ -53,10 +53,10 @@ class Trial:
         return df
     
     
-    def member_states_concerned(self) -> list[str]:
+    def member_states_concerned(self) -> List[str]:
         return list(self.overall_trial_status_table()['Member state'])
     
-    def documents_part_1(self) -> list[Document]:
+    def documents_part_1(self) -> List[Document]:
         '''
         Returns a list of all documents attached trial specific information (Part I).
         '''
@@ -66,14 +66,14 @@ class Trial:
         return CTIS.parse_documents_table(trial_document_table)
     
     
-    def __country_accordions(self) -> list[BeautifulSoup]:
+    def __country_accordions(self) -> List[BeautifulSoup]:
         trialStatusInfoDataTable = self.__soup_full().find(id='countrySpecificDetailsInfoAccordionId')
         separated = CTIS.separate_accordion_sections(trialStatusInfoDataTable)
         new_keys = {k.split("-")[0].strip(): v for k, v in separated.items()}
         return new_keys
     
     
-    def documents_part_2(self) -> dict[str, list[Document]]:
+    def documents_part_2(self) -> dict[str, List[Document]]:
         '''
         Returns a dictionary of all documents attached country specific details (Part II). The key is the country name, and the value is a list of documents attached.
         '''
