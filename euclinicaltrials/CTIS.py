@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup, element
 import re
 from datetime import datetime
 from .Document import Document
+from typing import List
 
 BASE_URI = "https://euclinicaltrials.eu"
 
@@ -48,7 +49,7 @@ def is_maintenace_window(time: datetime = datetime.now()) -> bool:
             return True
     return False
 
-def get_all_trial_numbers() -> list[str]:
+def get_all_trial_numbers() -> List[str]:
     '''
     This method returns the ids of all trials in the database.
     '''
