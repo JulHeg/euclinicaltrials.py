@@ -1,10 +1,11 @@
+from __future__ import annotations
 import requests
 from pytz import timezone
 from bs4 import BeautifulSoup, element
 import re
 from datetime import datetime
 from .Document import Document
-from typing import List
+from typing import List, Dict
 
 BASE_URI = "https://euclinicaltrials.eu"
 
@@ -75,7 +76,7 @@ def get_all_trial_numbers() -> List[str]:
         numbers |= new_numbers
     return list(numbers)
 
-def get_content_by_id(soup: type[BeautifulSoup], id: str) -> str:
+def get_content_by_id(soup: BeautifulSoup, id: str) -> str:
     res1 = soup.find(id=id).getText().strip()
     return res1
 
@@ -87,13 +88,13 @@ def yes_no_to_boolean(x: str) -> bool:
     else:
         raise ValueError("Unexpected value: " + x)
 
-def parse_CTIS_date(x: str) -> type[datetime.date]:
+def parse_CTIS_date(x: str) -> datetime.date:
     '''
     Dates on CTIS website have the form dd/mm/yyyy
     '''
     return datetime.strptime(x, '%d/%m/%Y').date()
 
-def parse_documents_table(table: type[BeautifulSoup]):
+def parse_documents_table(table: BeautifulSoup):
     attached_documents = []
     try:
         trial_document_table_body = table.find(name="tbody")
@@ -115,7 +116,7 @@ def parse_documents_table(table: type[BeautifulSoup]):
         #TODO: Currently this catches both exceptions and when no documents are attached. But it should only catch the latter to fail fast.
     return attached_documents
 
-def separate_accordion_sections(soup: type[BeautifulSoup]) -> dict[str, type[BeautifulSoup]]:
+def separate_accordion_sections(soup: BeautifulSoup) -> Dict[str, BeautifulSoup]:
     '''
     Separate accordion sections as a dictionary of section name and section content
     '''

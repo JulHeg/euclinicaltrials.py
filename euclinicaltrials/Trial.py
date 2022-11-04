@@ -1,17 +1,19 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
+from typing import List, Dict, Type
 import requests
 from bs4 import BeautifulSoup
 from . import CTIS, Document
 import pandas as pd
 
 
+
 class Trial:
     EUCTNUMBER: str
-    __soup_full_cache: type[BeautifulSoup]
-    __soup_results_cache: type[BeautifulSoup]
-    __soup_summary_cache: type[BeautifulSoup]
+    __soup_full_cache: BeautifulSoup
+    __soup_results_cache: BeautifulSoup
+    __soup_summary_cache: BeautifulSoup
     
     def __init__(self, EUCTNUMBER:str) -> None:
         self.EUCTNUMBER = EUCTNUMBER
@@ -43,7 +45,7 @@ class Trial:
             self.__soup_summary_cache = BeautifulSoup(page.content, "html.parser")
         return self.__soup_summary_cache
     
-    def overall_trial_status_table(self) -> type[pd.core.frame.DataFrame]:
+    def overall_trial_status_table(self) -> pd.core.frame.DataFrame:
         '''
         Returns a pandas dataframe of the overall trial status table (the big one on the Summary tab)
         '''
@@ -56,7 +58,7 @@ class Trial:
     def member_states_concerned(self) -> List[str]:
         return list(self.overall_trial_status_table()['Member state'])
     
-    def documents_part_1(self) -> List[Document]:
+    def documents_part_1(self) -> List[Type[Document]]:
         '''
         Returns a list of all documents attached trial specific information (Part I).
         '''
@@ -66,14 +68,14 @@ class Trial:
         return CTIS.parse_documents_table(trial_document_table)
     
     
-    def __country_accordions(self) -> List[BeautifulSoup]:
+    def __country_accordions(self) -> List[Type[BeautifulSoup]]:
         trialStatusInfoDataTable = self.__soup_full().find(id='countrySpecificDetailsInfoAccordionId')
         separated = CTIS.separate_accordion_sections(trialStatusInfoDataTable)
         new_keys = {k.split("-")[0].strip(): v for k, v in separated.items()}
         return new_keys
     
     
-    def documents_part_2(self) -> dict[str, List[Document]]:
+    def documents_part_2(self) -> Dict[str, List[Type[Document]]]:
         '''
         Returns a dictionary of all documents attached country specific details (Part II). The key is the country name, and the value is a list of documents attached.
         '''
@@ -86,7 +88,7 @@ class Trial:
         return attached_documents
     
     
-    def planned_subjects_by_country(self) -> dict[str, list[Document]]:
+    def planned_subjects_by_country(self) -> Dict[str, List[Type[Document]]]:
         '''
         Returns a dictionary of all documents attached country specific details (Part II). The key is the country name, and the value is a list of documents attached.
         '''
@@ -159,12 +161,12 @@ class Trial:
         return CTIS.yes_no_to_boolean(is_medical_device)
 
     
-    def first_submitted_date(self) -> type[datetime.date]:
+    def first_submitted_date(self) -> datetime.date:
         first_submitted_date = CTIS.get_content_by_id(self.__soup_summary(), "_emactview_WAR_emactpublicportlet_:mainFormID:trialInfoFirstSumbittedId")
         return CTIS.parse_CTIS_date(first_submitted_date)
 
     
-    def last_update_date(self) -> type[datetime.date]:
+    def last_update_date(self) -> datetime.date:
         last_update_date = CTIS.get_content_by_id(self.__soup_summary(), "_emactview_WAR_emactpublicportlet_:mainFormID:trialInfoLastUpdatedId")
         return CTIS.parse_CTIS_date(last_update_date)
 
