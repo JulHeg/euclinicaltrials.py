@@ -37,6 +37,7 @@ class Document:
                     'Summary of Product Characteristics (SmPC) (for publication)',
                     'Summary of scientific advice (for publication)',
                     'Synopsis of the protocol (for publication)']
+    
     def is_published_protocol(self) -> bool:
         '''
         Returns True if the document is a full protocol that has been published, False otherwise.
