@@ -21,7 +21,7 @@ from euclinicaltrials import CTIS, Trial
 trial_ids = CTIS.get_all_trial_numbers()
 ```
 
-Get a list of which member states the trial happens in:
+Get a list of which member states a trial happens in:
 
 ```python
 trial = Trial(trial_ids[0])

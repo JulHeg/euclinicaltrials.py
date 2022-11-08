@@ -28,7 +28,7 @@ class OnlineTest(unittest.TestCase):
         self.assertTrue(test_trial.first_submitted_date()  == datetime.date(2022, 3, 7))
         self.assertTrue(test_trial_id in test_trial.link())
         self.assertTrue('.zip' in test_trial.full_zip_download_link())
-        self.assertFalse(test_trial.protocol_published())
+        self.assertFalse(test_trial.is_protocol_published())
         self.assertFalse(test_trial.is_low_intervention())
         self.assertTrue(test_trial.last_update_date() > datetime.date(2022, 7, 7))
         self.assertFalse(test_trial.is_medical_device())

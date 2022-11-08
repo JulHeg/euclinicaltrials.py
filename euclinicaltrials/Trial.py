@@ -189,7 +189,7 @@ class Trial:
         return response.text
 
     
-    def protocol_published(self) -> bool:
+    def is_protocol_published(self) -> bool:
         '''
         Returns True if the trial has a full protocol published, False otherwise.
         '''

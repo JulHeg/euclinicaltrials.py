@@ -42,4 +42,4 @@ class Document:
         '''
         Returns True if the document is a full protocol that has been published, False otherwise.
         '''
-        return self.filetype == "Protocol (for publication)" and self.url is not None
+        return self.documenttype == "Protocol (for publication)" and self.url is not None
